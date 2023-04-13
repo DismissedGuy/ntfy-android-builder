@@ -18,6 +18,16 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Configure custom server
+      env:
+        NTFY_APP_BASE_URL: ${{ secrets.NTFY_APP_BASE_URL }}
+        NTFY_FCM_CONFIG: ${{ secrets.NTFY_FCM_CONFIG }}
+      run: |
+        echo "Updating base URL"
+        echo "<todo>"
+        echo "Writing Firebase config to app/google-services.json"
+        cat "${NTFY_APP_BASE_URL}" >> app/google-services.json
+
     - name: Build with Gradle
       run: |
         chmod +x gradlew
