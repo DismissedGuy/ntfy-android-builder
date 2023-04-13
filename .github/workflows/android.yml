@@ -26,7 +26,7 @@ jobs:
         echo "Updating base URL"
         echo "<todo>"
         echo "Writing Firebase config to app/google-services.json"
-        echo "${NTFY_APP_BASE_URL}" >> app/google-services.json
+        printf "${NTFY_APP_BASE_URL}" >> app/google-services.json
 
     - name: Build with Gradle
       run: |
