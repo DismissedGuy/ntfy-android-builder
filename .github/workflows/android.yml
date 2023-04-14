@@ -33,7 +33,19 @@ jobs:
         chmod +x gradlew
         ./gradlew assemblePlayRelease
 
+    - name: Sign APK
+      env:
+        APK_KEYSTORE: ${{ secrets.APK_KEYSTORE }}
+        APK_KEYSTORE_PASS: ${{ secrets.APK_KEYSTORE_PASS }}
+      run: |
+        sudo apt install -y apksigner
+        APK_SRC="$(find . -name '*.apk')"
+        echo "Signing APK found in ${APK_SRC}"
+        
+        printf "${APK_KEYSTORE}" | base64 -d >> ks.keystore
+        mkdir -p output/
+        apksigner sign --ks ks.keystore --ks-pass "pass:${APK_KEYSTORE_PASS}" --in "${APK_SRC}" --out "output/ntfy-signed.apk"
     - uses: actions/upload-artifact@v3
       with:
         name: Ntfy Android
-        path: "**/release/*.apk"
+        path: "output/ntfy-signed.apk"
