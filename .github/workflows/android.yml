@@ -32,3 +32,8 @@ jobs:
       run: |
         chmod +x gradlew
         ./gradlew assemblePlayRelease
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Ntfy Android
+        path: **/*.apk
