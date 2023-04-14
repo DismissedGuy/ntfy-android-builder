@@ -24,7 +24,7 @@ jobs:
         NTFY_FCM_CONFIG: ${{ secrets.NTFY_FCM_CONFIG }}
       run: |
         echo "Updating base URL"
-        sed -i 's#\(<string name="app_base_url".*>\).\+\(</string>\)#\1${NTFY_APP_BASE_URL}\2#g' app/src/main/res/values/values.xml
+        sed -i "s#\(<string name=\"app_base_url\".*>\).\+\(</string>\)#\1${NTFY_APP_BASE_URL}\2#g" app/src/main/res/values/values.xml
         echo "Writing Firebase config to app/google-services.json"
         printf "${NTFY_FCM_CONFIG}" >> app/google-services.json
 
