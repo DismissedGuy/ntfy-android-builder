@@ -1,50 +1,32 @@
-# ntfy Android App
-This is the Android app for [ntfy](https://github.com/binwiederhier/ntfy) ([ntfy.sh](https://ntfy.sh)). You can find the app in [F-Droid](https://f-droid.org/packages/io.heckel.ntfy/) or the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
-or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
+# ntfy Android Builder
+A builder for the ntfy Android app that makes it easier to build a release for your custom server!
+No local setup required, everything is built using GitHub Actions.
 
-# Build
+Note: This builder only supports building the Play release with Firebase Cloud Messaging.
 
-## Building without Firebase (F-Droid flavor)
-Without Firebase, you may want to still change the default `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
-if you're self-hosting the server. Then run:
+## Preparation
+1. Create a [Firebase](https://firebase.google.com) project and add an Android app, using `io.heckel.ntfy` as package ID when asked. Save the `google-services.json`.
+2. Generate a new keystore using `keytool` if you don't have one already:
+```bash
+keytool -genkey -v -keystore your_keystore_name.keystore -alias your_alias_name -keyalg RSA -keysize 2048 -validity 10000
 ```
-# To build an unsigned .apk (app/build/outputs/apk/fdroid/*.apk)
-./gradlew assembleFdroidRelease
+Make sure to save the password somewhere.
+3. Fork this repository. You might want to consider making it private to hide your custom artifact builds.
 
-# To build a bundle .aab (app/fdroid/release/*.aab)
-./gradlew bundleFdroidRelease
-```
+## Setting up
+1. Enable GitHub actions for your repository (if disabled!)
+2. Create a base64-encoded copy of your previously generated keystore: `cat your_keystore_name.keystore | base64`
+3. In Actions secrets, set the following:
+    1. **APK_KEYSTORE**: The base64-encoded copy of your keystore generated in step 2.
+    2. **APK_KEYSTORE_PASS**: The password to your keystore to be used for signing.
+    3. **NTFY_APP_BASE_URL**: Default server base URL to be used in the app.
+    4. **NTFY_FCM_CONFIG**: Contents of the Firebase Cloud Messaging config file, as downloaded in step 1 of Preparation.
+4. Go the the GitHub actions tab, run the `Android CI` workflow and wait for a few minutes
+5. Done! Your signed APK can be found in the list of artifacts.
 
-## Building with Firebase (FCM, Google Play flavor)
-To build your own version with Firebase, you must:
-* Create a Firebase/FCM account
-* Place your account file at `app/google-services.json` 
-* And change `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
-* Then run:
-```
-# To build an unsigned .apk (app/build/outputs/apk/play/*.apk)
-./gradlew assemblePlayRelease
+## Getting help
+If you need help with ntfy in particular, please contact them directly. I am not affilated with them in any way.
 
-# To build a bundle .aab (app/play/release/*.aab)
-./gradlew bundlePlayRelease
-```
+I am not planning on providing extensive support for this little project. Feel free to open an issue if you need help, but don't expect me to fix all of your problems.
 
-## Translations
-We're using [Weblate](https://hosted.weblate.org/projects/ntfy/) to translate the ntfy Android app. We'd love your participation.
-
-<a href="https://hosted.weblate.org/engage/ntfy/">
-<img src="https://hosted.weblate.org/widgets/ntfy/-/multi-blue.svg" alt="Translation status" />
-</a>
-
-## License
-Made with ❤️ by [Philipp C. Heckel](https://heckel.io), distributed under the [Apache License 2.0](LICENSE).
-
-Thank you to these fantastic resources:
-* [RecyclerViewKotlin](https://github.com/android/views-widgets-samples/tree/main/RecyclerViewKotlin) (Apache 2.0)
-* [Just another Hacker News Android client](https://github.com/manoamaro/another-hacker-news-client) (MIT)
-* [Android Room with a View](https://github.com/googlecodelabs/android-room-with-a-view/tree/kotlin) (Apache 2.0)
-* [Firebase Messaging Example](https://github.com/firebase/quickstart-android/blob/7147f60451b3eeaaa05fc31208ffb67e2df73c3c/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/kotlin/MyFirebaseMessagingService.kt) (Apache 2.0)
-* [Designing a logo with Inkscape](https://www.youtube.com/watch?v=r2Kv61cd2P4)
-* [Foreground service](https://robertohuertas.com/2019/06/29/android_foreground_services/)
-* [github/gemoji](https://github.com/github/gemoji) (MIT) for as data source for an up-to-date [emoji.json](https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json) file
-* [emoji-java](https://github.com/vdurmont/emoji-java) (MIT) has been stripped and inlined to use the emoji.json file
+Pull requests to enhance the workflow are of course always welcome!
